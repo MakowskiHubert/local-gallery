@@ -1,0 +1,7 @@
+node_modules/
+*.log
+*.tgz
+.local-gallery/
+.DS_Store
+Thumbs.db
+desktop.ini

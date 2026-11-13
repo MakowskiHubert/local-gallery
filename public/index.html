@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Gallery</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar" data-i18n-aria="folders">
+      <div class="brand">
+        <span class="brand-mark" data-icon="grid"></span>
+        <span data-i18n="appName">Gallery</span>
+      </div>
+      <nav class="nav" id="nav"></nav>
+      <div class="sidebar-foot">
+        <div class="root-path" id="root-path"></div>
+        <button class="foot-btn" id="reveal-btn" type="button"><span data-icon="folder"></span><span data-i18n="openFolder">Open folder</span></button>
+      </div>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-btn menu-btn" id="menu-btn" type="button" data-i18n-aria="menu"><span data-icon="menu"></span></button>
+        <div class="crumbs" id="crumbs"></div>
+        <span class="count" id="count"></span>
+        <div class="spacer"></div>
+        <label class="search">
+          <span data-icon="search"></span>
+          <input id="search" type="search" autocomplete="off" spellcheck="false" data-i18n-placeholder="search" data-i18n-aria="searchLabel">
+        </label>
+        <div class="menu-wrap">
+          <button class="pill" id="filter-btn" type="button" aria-haspopup="true" aria-expanded="false"><span data-icon="filter"></span><span class="lbl" data-i18n="filter">Filter</span></button>
+          <div class="menu" id="filter-menu" hidden></div>
+        </div>
+        <div class="menu-wrap">
+          <button class="pill" id="view-btn" type="button" aria-haspopup="true" aria-expanded="false"><span data-icon="grid"></span><span class="lbl" data-i18n="view">View</span></button>
+          <div class="menu" id="view-menu" hidden></div>
+        </div>
+      </header>
+      <div class="content" id="content"></div>
+    </main>
+  </div>
+
+  <div class="selbar" id="selbar" hidden>
+    <span class="sel-count" id="sel-count"></span>
+    <button type="button" data-sel="fav"><span data-icon="heart"></span><span data-i18n="toFavorites">Add to favorites</span></button>
+    <button type="button" data-sel="unfav" data-i18n="removeFavorite">Remove from favorites</button>
+    <button type="button" data-sel="paths"><span data-icon="link"></span><span data-i18n="copyPaths">Copy paths</span></button>
+    <button type="button" data-sel="all" data-i18n="selectAll">Select all</button>
+    <button type="button" class="sel-close" data-sel="clear" data-i18n-aria="clearSelection"><span data-icon="x"></span></button>
+  </div>
+
+  <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" data-i18n-aria="preview">
+    <div class="lb-top">
+      <div class="lb-title">
+        <strong id="lb-name"></strong>
+        <span id="lb-meta"></span>
+      </div>
+      <div class="lb-actions">
+        <button class="lb-btn" type="button" data-lb="fav"><span data-icon="heart"></span></button>
+        <button class="lb-btn" type="button" data-lb="download" data-i18n-title="download"><span data-icon="download"></span></button>
+        <button class="lb-btn" type="button" data-lb="copy"><span data-icon="copy"></span></button>
+        <button class="lb-btn" type="button" data-lb="reveal" data-i18n-title="showInFolder"><span data-icon="folder"></span></button>
+        <button class="lb-btn" type="button" data-lb="zoom" data-i18n-title="zoom"><span data-icon="zoom"></span></button>
+        <button class="lb-btn" type="button" data-lb="close" data-i18n-title="close"><span data-icon="x"></span></button>
+      </div>
+    </div>
+    <div class="lb-stage" id="lb-stage"></div>
+    <button class="lb-nav prev" type="button" data-lb="prev" data-i18n-aria="previous"><span data-icon="left"></span></button>
+    <button class="lb-nav next" type="button" data-lb="next" data-i18n-aria="next"><span data-icon="right"></span></button>
+    <div class="lb-counter" id="lb-counter"></div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

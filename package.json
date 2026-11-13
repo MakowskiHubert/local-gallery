@@ -1,0 +1,48 @@
+{
+  "name": "local-gallery",
+  "version": "0.1.0",
+  "description": "Zero-dependency local gallery for a folder of images and videos: justified grid, folders, lightbox, favorites, live refresh. One command: npx local-gallery <folder>.",
+  "keywords": [
+    "gallery",
+    "image-gallery",
+    "local-gallery",
+    "photo-viewer",
+    "image-viewer",
+    "lightbox",
+    "justified-layout",
+    "ai-generated-images",
+    "ai-art",
+    "self-hosted",
+    "zero-dependencies",
+    "cli",
+    "agent-skill",
+    "claude-code"
+  ],
+  "homepage": "https://github.com/MakowskiHubert/local-gallery#readme",
+  "bugs": "https://github.com/MakowskiHubert/local-gallery/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MakowskiHubert/local-gallery.git"
+  },
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "local-gallery": "bin/local-gallery.mjs"
+  },
+  "exports": {
+    ".": "./src/server.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "public",
+    "skills"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node bin/local-gallery.mjs",
+    "test": "node --test test/"
+  }
+}
