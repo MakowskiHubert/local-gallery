@@ -43,6 +43,6 @@
   },
   "scripts": {
     "start": "node bin/local-gallery.mjs",
-    "test": "node --test test/"
+    "test": "node --test test/server.test.mjs"
   }
 }
