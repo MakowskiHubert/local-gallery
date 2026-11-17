@@ -1,6 +1,6 @@
 {
   "name": "local-gallery",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Zero-dependency local gallery for a folder of images and videos: justified grid, folders, lightbox, favorites, live refresh. One command: npx local-gallery <folder>.",
   "keywords": [
     "gallery",

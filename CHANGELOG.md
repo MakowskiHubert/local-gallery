@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.0
+
+First stable release. The command-line options, the HTTP API and
+`startGallery()` are now stable and follow semantic versioning.
+
+- **Show in folder** and **Copy file name** are now tile buttons, right under
+  **Copy image**, instead of entries in the **More** menu. On short tiles the
+  buttons wrap into a second column.
+- Windows: **Show in folder** and **Open folder** bring the Explorer window to
+  the front. Before, it opened behind the browser and only flashed in the taskbar.
+- README: an animated demo recorded with generated pictures replaces the
+  screenshot of third-party artwork.
+
 ## 0.1.0
 
 First release.
