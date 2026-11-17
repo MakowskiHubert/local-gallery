@@ -9,14 +9,7 @@ of AI-generated images and videos, and it works for any media folder.
 npx local-gallery ~/Pictures/renders
 ```
 
-![local-gallery showing two folders of game and film artwork in a justified grid](docs/screenshot.png)
-
-> **Unofficial project.** local-gallery is not an official CD PROJEKT RED product
-> and is not affiliated with, endorsed or sponsored by CD PROJEKT RED. The
-> screenshot shows the author's private reference folder. The Witcher artwork
-> and trademarks in it belong to CD PROJEKT RED. All other games, films,
-> characters and images shown belong to their respective owners. See
-> [Third-party content](#third-party-content).
+![local-gallery demo: hover actions, adding favorites, the Favorites view, the lightbox and a new file appearing live](docs/demo.webp)
 
 ## Features
 
@@ -127,23 +120,6 @@ npm start -- /path/to/images
 There are no dependencies and no build step. See [AGENTS.md](AGENTS.md) for the
 code layout and project rules.
 
-## Third-party content
-
-local-gallery is an independent, unofficial project. It is not affiliated
-with, endorsed or sponsored by CD PROJEKT RED or any other company whose work
-appears in the screenshot.
-
-- The Witcher, its artwork, characters and logos are trademarks and
-  copyrighted works of CD PROJEKT RED. They appear in `docs/screenshot.png` only
-  to illustrate how the gallery displays a folder of images.
-- All other trademarks, characters and images visible in the screenshot belong
-  to their respective owners.
-- No game files or game artwork are distributed with the package. The npm
-  package contains only the source code.
-
 ## License
 
-The [MIT License](LICENSE) covers **only the source code** of this repository
-(`bin/`, `src/`, `public/`, `test/`, `skills/` and the documentation text). It
-does **not** cover the third-party artwork shown in `docs/screenshot.png`, which
-remains the property of its owners and is not licensed for reuse.
+[MIT](LICENSE)

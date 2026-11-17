@@ -407,6 +407,8 @@ function tileElement(item, i) {
       <button class="act${item.favorite ? ' on' : ''}" type="button" data-act="fav" title="${t(item.favorite ? 'removeFavorite' : 'addFavorite')}">${icon('heart')}</button>
       <button class="act" type="button" data-act="download" title="${t('download')}">${icon('download')}</button>
       <button class="act" type="button" data-act="copy" title="${t(item.type === 'image' ? 'copyImage' : 'copyPath')}">${icon('copy')}</button>
+      <button class="act" type="button" data-act="reveal" title="${t('showInFolder')}">${icon('folder')}</button>
+      <button class="act" type="button" data-act="name" title="${t('copyName')}">${icon('text')}</button>
       <button class="act" type="button" data-act="more" title="${t('more')}">${icon('more')}</button>
     </div>
     ${item.type === 'video' ? `<span class="play-badge">${icon('play')}</span>` : ''}
@@ -611,6 +613,8 @@ $('#content').addEventListener('click', event => {
   if (action === 'fav') return setFavorite([item], !item.favorite)
   if (action === 'download') return download(item)
   if (action === 'copy') return copyItem(item)
+  if (action === 'reveal') return reveal(item.path)
+  if (action === 'name') return copyText(item.name, t('copiedName'))
   if (action === 'more') { event.stopPropagation(); return itemMenu(item, actionEl) }
   openLightbox(index)
 })
@@ -756,10 +760,8 @@ function openPop(anchor, entries) {
 function itemMenu(item, anchor) {
   openPop(anchor, [
     ['zoom', t('openPreview'), () => openLightbox(state.view.indexOf(item))],
-    ['folder', t('showInFolder'), () => reveal(item.path)],
     ['external', t('openInTab'), () => window.open(mediaUrl(item), '_blank', 'noopener')],
     ['link', t('copyPath'), () => copyText(absPath(item), t('copiedPath'))],
-    ['text', t('copyName'), () => copyText(item.name, t('copiedName'))],
   ])
 }
 window.addEventListener('scroll', closePop, { passive: true })

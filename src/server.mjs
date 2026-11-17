@@ -104,12 +104,65 @@ async function exists(file) {
   try { await stat(file); return true } catch { return false }
 }
 
+/**
+ * PowerShell script that opens Explorer and brings its new window to the front.
+ * Windows does not let a background process such as this server take the focus
+ * from the browser, so Explorer would only flash in the taskbar. A zero input
+ * event lifts that lock for this script. The path comes from LOCAL_GALLERY_TARGET.
+ */
+export const REVEAL_SCRIPT = String.raw`
+$target = $env:LOCAL_GALLERY_TARGET
+$select = $env:LOCAL_GALLERY_SELECT -eq '1'
+$folder = if ($select) { Split-Path -LiteralPath $target } else { $target }
+$shell = $null
+function Find-Windows {
+  @(foreach ($w in @($shell.Windows())) { try { if ($w.Document.Folder.Self.Path -eq $folder) { $w.HWND } } catch {} })
+}
+try { $shell = New-Object -ComObject Shell.Application; $before = (Find-Windows).Count } catch { $shell = $null }
+Start-Process explorer.exe -ArgumentList $(if ($select) { "/select,""$target""" } else { """$target""" })
+if (-not $shell) { exit }
+try {
+  Add-Type -TypeDefinition '
+using System;
+using System.Runtime.InteropServices;
+public static class LocalGalleryWindow {
+  [StructLayout(LayoutKind.Sequential)] public struct MOUSEINPUT { public int dx, dy; public uint mouseData, flags, time; public IntPtr extra; }
+  [StructLayout(LayoutKind.Sequential)] public struct INPUT { public uint type; public MOUSEINPUT mi; }
+  [DllImport("user32.dll")] static extern uint SendInput(uint count, INPUT[] inputs, int size);
+  [DllImport("user32.dll")] static extern bool SetForegroundWindow(IntPtr hwnd);
+  [DllImport("user32.dll")] static extern bool IsIconic(IntPtr hwnd);
+  [DllImport("user32.dll")] static extern bool ShowWindow(IntPtr hwnd, int cmd);
+  public static void Focus(IntPtr hwnd) {
+    SendInput(1, new INPUT[1], Marshal.SizeOf(typeof(INPUT)));
+    if (IsIconic(hwnd)) ShowWindow(hwnd, 9);
+    SetForegroundWindow(hwnd);
+  }
+}'
+} catch { exit }
+$deadline = [DateTime]::Now.AddSeconds(5)
+while ([DateTime]::Now -lt $deadline) {
+  Start-Sleep -Milliseconds 100
+  $found = Find-Windows
+  if ($found.Count -gt $before) { [LocalGalleryWindow]::Focus([IntPtr][long]$found[-1]); break }
+}
+`
+
+function explorer(target, select) {
+  // explorer.exe needs the quoted path verbatim; Windows paths cannot contain quotes.
+  spawn('explorer.exe', [select ? `/select,"${target}"` : `"${target}"`], { windowsVerbatimArguments: true, detached: true, stdio: 'ignore' }).unref()
+}
+
 /** Open a URL, file or folder with the operating system. */
 function osOpen(target, { select = false } = {}) {
   if (process.platform === 'win32') {
     if (/^https?:/.test(target)) return spawn('cmd', ['/c', 'start', '', target], { detached: true, stdio: 'ignore' }).unref()
-    // explorer.exe needs the quoted path verbatim; Windows paths cannot contain quotes.
-    spawn('explorer.exe', [select ? `/select,"${target}"` : `"${target}"`], { windowsVerbatimArguments: true, detached: true, stdio: 'ignore' }).unref()
+    const script = Buffer.from(REVEAL_SCRIPT, 'utf16le').toString('base64')
+    const ps = spawn('powershell.exe', ['-NoProfile', '-NonInteractive', '-EncodedCommand', script], {
+      env: { ...process.env, LOCAL_GALLERY_TARGET: target, LOCAL_GALLERY_SELECT: select ? '1' : '' },
+      windowsHide: true, stdio: 'ignore',
+    })
+    ps.on('error', () => explorer(target, select))
+    ps.unref()
   } else if (process.platform === 'darwin') {
     spawn('open', select ? ['-R', target] : [target], { detached: true, stdio: 'ignore' }).unref()
   } else {

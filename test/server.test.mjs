@@ -4,7 +4,11 @@ import { request } from 'node:http'
 import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { parseDims, resolveInside, startGallery } from '../src/server.mjs'
+import { execFile } from 'node:child_process'
+import { promisify } from 'node:util'
+import { REVEAL_SCRIPT, parseDims, resolveInside, startGallery } from '../src/server.mjs'
+
+const run = promisify(execFile)
 
 // ---------- minimal image headers ----------
 
@@ -184,4 +188,19 @@ test('a second start for the same folder reuses the running gallery', async () =
 
 test('a missing folder is reported', async () => {
   await assert.rejects(startGallery({ root: path.join(root, 'missing'), port: 0 }), /Folder not found/)
+})
+
+// Checks the script without running it, since running it opens an Explorer window.
+test('the Windows reveal script parses and its C# compiles', { skip: process.platform !== 'win32' }, async () => {
+  const csharp = REVEAL_SCRIPT.match(/-TypeDefinition '([\s\S]*?)'\n/)[1]
+  const check = [
+    '$errors = $null; $tokens = $null',
+    '[void][System.Management.Automation.Language.Parser]::ParseInput($env:LG_SCRIPT, [ref]$tokens, [ref]$errors)',
+    'Add-Type -TypeDefinition $env:LG_CSHARP',
+    '"$($errors.Count) $([bool][LocalGalleryWindow].GetMethod(\'Focus\'))"',
+  ].join('\n')
+  const { stdout } = await run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', check], {
+    env: { ...process.env, LG_SCRIPT: REVEAL_SCRIPT, LG_CSHARP: csharp },
+  })
+  assert.equal(stdout.trim(), '0 True')
 })
